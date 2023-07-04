@@ -44,7 +44,7 @@ export const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
     // onSuccess: (data) => {
-    //   // queryClient.invalidateQueries("super-heroes"); // There is no need for network call again when the new data is returned by mutation
+    //   // queryClient.invalidateQueries("super-heroes"); // There may be no need for network call again when the new data is returned by mutation
     //   queryClient.setQueryData("super-heroes", (oldQueryData) => {
     //     return {
     //       ...oldQueryData,

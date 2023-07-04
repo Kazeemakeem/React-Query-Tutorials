@@ -1,60 +1,41 @@
-import { Fragment } from 'react'
-import { useInfiniteQuery } from 'react-query'
-import axios from 'axios'
+import { useQuery } from "react-query";
+import axios from "axios";
+import { useState } from "react";
 
-const fetchColors = ({ pageParam = 1 }) => {
-  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageParam}`)
-}
+const fetchColors = (limit) => {
+  return axios.get(`http://localhost:4000/colors?_limit=${limit}`);
+};
 
-export const InfiniteQueriesPage = () => {
-  const {
-    isLoading,
-    isError,
-    error,
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage
-  } = useInfiniteQuery(['colors'], fetchColors, {
-    getNextPageParam: (_lastPage, pages) => {
-      if (pages.length < 4) {
-        return pages.length + 1
-      } else {
-        return undefined
-      }
-    }
-  })
-
-  if (isLoading) {
-    return <h2>Loading...</h2>
+const InfiniteQueriesPage = () => {
+  const [limit, setLimit] = useState(2);
+  const { isLoading, data, isError, error, isFetching } = useQuery(
+    ["colors", limit],
+    () => fetchColors(limit)
+  );
+  if (isLoading || isFetching) {
+    return <h2>Loading...</h2>;
   }
 
   if (isError) {
-    return <h2>{error.message}</h2>
+    return <h2>{error.message}</h2>;
   }
 
   return (
     <>
-      <div>
-        {data?.pages.map((group, i) => {
-          return (
-            <Fragment key={i}>
-              {group.data.map(color => (
-                <h2 key={color.id}>
-                  {color.id} {color.label}
-                </h2>
-              ))}
-            </Fragment>
-          )
-        })}
-      </div>
-      <div>
-        <button onClick={() => fetchNextPage()} disabled={!hasNextPage}>
-          Load more
-        </button>
-      </div>
-      <div>{isFetching && !isFetchingNextPage ? 'Fetching...' : null}</div>
+      <h1>Paginated Queries</h1>
+      {data?.data.map((color) => (
+        <h2 key={color.id}>
+          {color.id}. {color.label}
+        </h2>
+      ))}
+      <button
+        onClick={() => setLimit(limit + 2)}
+        disabled={data.data.length === 8}
+      >
+        load more ...
+      </button>
     </>
-  )
-}
+  );
+};
+
+export default InfiniteQueriesPage;

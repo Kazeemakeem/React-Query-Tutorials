@@ -12,8 +12,28 @@
     },
     {
       "id": 3,
-      "name": "Wonder Woman",
+      "name": "Wonder Woman 1",
       "alterEgo": "Princess Diana"
+    },
+    {
+      "id": 4,
+      "name": "Wonder Woman 2",
+      "alterEgo": "Princess Diana 2"
+    },
+    {
+      "name": "The Flash",
+      "alterEgo": "Barry Allen",
+      "id": 5
+    },
+    {
+      "name": "Shazam",
+      "alterEgo": "Billy Batson",
+      "id": 6
+    },
+    {
+      "name": "Catwoman",
+      "alterEgo": "Selena Kyle",
+      "id": 7
     }
   ],
   "friends": [
@@ -27,45 +47,53 @@
     },
     {
       "id": 3,
-      "name": "Rachel Green"
+      "name": "Rachael Green"
+    },
+    {
+      "id": 4,
+      "name": "Maria Sand"
     }
   ],
   "users": [
     {
-      "id": "vishwas@example.com",
-      "channelId": "codevolution"
+      "id": "user@example.com",
+      "channelId": "user-one"
     }
   ],
   "channels": [
     {
-      "id": "codevolution",
-      "courses": ["react", "vue", "angular"]
+      "id": "user-one",
+      "courses": [
+        "react",
+        "vue",
+        "angular"
+      ]
     }
   ],
   "colors": [
     {
       "id": 1,
-      "label": "red"
+      "label": "white"
     },
     {
       "id": 2,
-      "label": "blue"
-    },
-    {
-      "id": 3,
-      "label": "green"
-    },
-    {
-      "id": 4,
-      "label": "yellow"
-    },
-    {
-      "id": 5,
       "label": "black"
     },
     {
+      "id": 3,
+      "label": "yellow"
+    },
+    {
+      "id": 4,
+      "label": "red"
+    },
+    {
+      "id": 5,
+      "label": "blue"
+    },
+    {
       "id": 6,
-      "label": "white"
+      "label": "green"
     },
     {
       "id": 7,

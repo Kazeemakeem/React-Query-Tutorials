@@ -1,55 +1,46 @@
-import { useState } from 'react'
-import { useQuery } from 'react-query'
-import axios from 'axios'
+import { useQuery } from "react-query";
+import axios from "axios";
+import { useState } from "react";
 
-const fetchColors = pageNumber => {
-  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageNumber}`)
-}
+const fetchColors = (pageNum) => {
+  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageNum}`);
+};
 
-export const PaginatedQueriesPage = () => {
-  const [pageNumber, setPageNumber] = useState(1)
-  const { isLoading, isError, error, data, isFetching } = useQuery(
-    ['colors', pageNumber],
-    () => fetchColors(pageNumber),
+const PaginatedQueriesPage = () => {
+  const [pageNum, setPageNum] = useState(1);
+  const { isLoading, data, isError, error, isFetching } = useQuery(
+    ["colors", pageNum],
+    () => fetchColors(pageNum),
     {
-      keepPreviousData: true
+      // keep current page data until next page data arrives to prevent layout shift
+      keepPreviousData: true,
     }
-  )
-
+  );
   if (isLoading) {
-    return <h2>Loading...</h2>
+    return <h2>Loading...</h2>;
   }
 
   if (isError) {
-    return <h2>{error.message}</h2>
+    return <h2>{error.message}</h2>;
   }
 
   return (
     <>
-      <div>
-        {data?.data.map(color => {
-          return (
-            <div key={color.id}>
-              <h2>
-                {color.id}. {color.label}
-              </h2>
-            </div>
-          )
-        })}
-      </div>
-      <div>
-        <button
-          onClick={() => setPageNumber(page => page - 1)}
-          disabled={pageNumber === 1}>
-          Prev Page
-        </button>
-        <button
-          onClick={() => setPageNumber(page => page + 1)}
-          disabled={pageNumber === 4}>
-          Next Page
-        </button>
-      </div>
-      {isFetching && 'Loading'}
+      <h1>Paginated Queries</h1>
+      {data?.data.map((color) => (
+        <h2 key={color.id}>
+          {color.id}. {color.label}
+        </h2>
+      ))}
+      <button onClick={() => setPageNum(pageNum - 1)} disabled={pageNum === 1}>
+        Previous
+      </button>
+      <button onClick={() => setPageNum(pageNum + 1)} disabled={pageNum === 4}>
+        Next
+      </button>
+      {isFetching && <p>Loading...</p>}
     </>
-  )
-}
+  );
+};
+
+export default PaginatedQueriesPage;

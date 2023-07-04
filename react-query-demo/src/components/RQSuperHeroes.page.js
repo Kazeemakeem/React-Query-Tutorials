@@ -1,71 +1,74 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
+  useSuperHeroesData,
   useAddSuperHeroData,
-  useSuperHeroesData
-} from '../hooks/useSuperHeroesData'
-import { Link } from 'react-router-dom'
+} from "../hooks/useSuperHeroesData";
+import { Link } from "react-router-dom";
 
 export const RQSuperHeroesPage = () => {
-  const [name, setName] = useState('')
-  const [alterEgo, setAlterEgo] = useState('')
+  const [pollInterval, setPollInterval] = useState(false);
+  const [name, setName] = useState("");
+  const [alterEgo, setAlterEgo] = useState("");
+  const onSuccess = (data) => {
+    //stop polling once data length equals 4
+    if (data.data.length === 4) setPollInterval(false);
+    console.log("Side effect upon success", data);
+  };
+  const onError = (error) => {
+    if (error) setPollInterval(false);
+    console.log("Side effect upon error", error);
+  };
+  const { isLoading, data, isError, error, isFetching, refetch } =
+    useSuperHeroesData(onSuccess, onError, pollInterval);
 
-  const onSuccess = data => {
-    console.log({ data })
-  }
-
-  const onError = error => {
-    console.log({ error })
-  }
-
-  const { isLoading, data, isError, error, refetch } = useSuperHeroesData(
-    onSuccess,
-    onError
-  )
-
-  const { mutate: addHero } = useAddSuperHeroData()
+  const {
+    mutate: addNewHero,
+    isLoading: mutateLoading,
+    isError: isMutateError,
+    error: mutateError,
+  } = useAddSuperHeroData();
 
   const handleAddHeroClick = () => {
-    const hero = { name, alterEgo }
-    addHero(hero)
-  }
+    const newHero = { name, alterEgo };
+    addNewHero(newHero);
+  };
 
-  if (isLoading) {
-    return <h2>Loading...</h2>
+  if (isLoading || isFetching) {
+    return <h2>Loading...</h2>;
   }
 
   if (isError) {
-    return <h2>{error.message}</h2>
+    return <h2>{error.message}</h2>;
   }
 
   return (
     <>
-      <h2>React Query Super Heroes Page</h2>
-      <div>
-        <input
-          type='text'
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
-        <input
-          type='text'
-          value={alterEgo}
-          onChange={e => setAlterEgo(e.target.value)}
-        />
+      <h2>RQ Super Heroes Page</h2>
+      <div style={{ display: "flex" }}>
+        <div>
+          Name
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div>
+          AlterEgo
+          <input
+            type="text"
+            value={alterEgo}
+            onChange={(e) => setAlterEgo(e.target.value)}
+          />
+        </div>
         <button onClick={handleAddHeroClick}>Add Hero</button>
       </div>
-      <button onClick={refetch}>Fetch heroes</button>
-      {data?.data.map(hero => {
-        return (
-          <div key={hero.id}>
-            <Link to={`/rq-super-heroes/${hero.id}`}>
-              {hero.id} {hero.name}
-            </Link>
-          </div>
-        )
-      })}
-      {/* {data.map(heroName => {
-        return <div key={heroName}>{heroName}</div>
-      })} */}
+      <button onClick={refetch}>Fetch Heroes</button>
+      {data?.data.map((hero) => (
+        <div key={hero.name}>
+          <Link to={`/rq-super-heroes/${hero.id}`}>{hero.name}</Link>
+        </div>
+      ))}
     </>
-  )
-}
+  );
+};
